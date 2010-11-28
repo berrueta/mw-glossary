@@ -1,0 +1,13 @@
+This is a simple Python script that generates a LaTeX glossary database,
+suitable for use with the 'glossary' package.
+
+A glossary entry is created for each page in the designated Wiki category.
+Only the first paragraph of the page is actually used.
+
+Requires Python >= 2.6 and mwclient (http://sourceforge.net/apps/mediawiki/mwclient/index.php?title=Main_Page)
+
+Example usage:
+
+$ python2.6 mw-glossary.py --host=example.org --path=/mediawiki/ --user=johndoe --pass=secret --domain=myldapdom
+
+Author: Diego Berrueta <diego _AT_ berrueta.net>
