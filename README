@@ -8,6 +8,7 @@ Requires Python >= 2.6 and mwclient (http://sourceforge.net/apps/mediawiki/mwcli
 
 Example usage:
 
-$ python2.6 mw-glossary.py --host=example.org --path=/mediawiki/ --user=johndoe --pass=secret --domain=myldapdom
+$ python2.6 mw-glossary.py --host=example.org --path=/mediawiki/ --user=johndoe \\
+                           --pass=secret --domain=myldapdom --output=glossary.tex
 
 Author: Diego Berrueta <diego _AT_ berrueta.net>
