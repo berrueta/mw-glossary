@@ -42,13 +42,16 @@ def populate_glos(host, path, catName, username = None, password = None, domain 
 
 def output_latex_glossary(glos, out = sys.stdout):
     out.write("\\makeglossary\n\n")
-    for k,v in glos.items():
+    items = glos.items()
+    items.sort()
+    for k,v in items:
         latexKey = "glo:%s" % translate(k.lower(), maketrans(" ", "-"), ".")
         out.write("\\storeglosentry{%s}{name={%s},description={%s}}\n\n" % (latexKey, k, to_latex(v)))
 
 
 def to_latex(s):
     s = re.sub("\[\[((.*)\|)?([^\]]*)\]\]","\\\\underline{\\3}", s)  # remove [[Internal|Links]]
+    s = re.sub("\[([^ ]*) ([^\]]*)\]","\\2", s)    # remove [http://example.org External links] 
     s = re.sub("'''([^']*)'''", "\\\\textbf{\\1}", s)  # remove '''bold'''
     s = re.sub("''([^']*)''", "\\\\textit{\\1}", s)  # remove ''italics''
     s = re.sub("\"([^\"]*)\"", "``\\1''", s)    # remove "quotes"
