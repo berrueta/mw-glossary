@@ -6,9 +6,16 @@ Only the first paragraph of the page is actually used.
 
 Requires Python >= 2.6 and mwclient (http://sourceforge.net/apps/mediawiki/mwclient/index.php?title=Main_Page)
 
+Additionally, for DOCX output, you'll need:
+* python-docx: https://github.com/mikemaccana/python-docx
+* python-lxml
+* python-pil
+
 Example usage:
 
 $ python2.6 mw-glossary.py --host=example.org --path=/mediawiki/ --user=johndoe \\
                            --pass=secret --domain=myldapdom --output=glossary.tex
+
+Use --help for getting reference documentation on all available options.
 
 Author: Diego Berrueta <diego _AT_ berrueta.net>

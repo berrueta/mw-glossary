@@ -40,7 +40,11 @@ def populate_glos(host, path, catName, username = None, password = None, domain 
 
 ###########################################################
 
-def output_html_glossary(glos, out = sys.stdout):
+def output_html_glossary(glos, filename):
+    if filename == None:
+        out = sys.out
+    else:
+        out = open(filename, "wt")
     out.write("<html><body><dl>")
     items = glos.items()
     items.sort()
@@ -57,7 +61,11 @@ def to_html(s):
 
 ###########################################################
 
-def output_latex_glossary(glos, out = sys.stdout):
+def output_latex_glossary(glos, filename):
+    if filename == None:
+        out = sys.out
+    else:
+        out = open(filename, "wt")
     out.write("\\makeglossary\n\n")
     items = glos.items()
     items.sort()
@@ -68,10 +76,37 @@ def output_latex_glossary(glos, out = sys.stdout):
 
 def to_latex(s):
     s = re.sub("\[\[((.*)\|)?([^\]]*)\]\]","\\\\underline{\\3}", s)  # change [[Internal|Links]]
-    s = re.sub("\[([^\] ]*) ([^\]]*)\]","\\2", s)    # change [http://example.org External links] 
+    s = re.sub("\[([^\] ]*) ([^\]]*)\]","\\2", s)    # remove [http://example.org External links] 
     s = re.sub("'''([^']*)'''", "\\\\textbf{\\1}", s)  # change '''bold'''
-    s = re.sub("''([^']*)''", "\\\\textit{\\1}", s)  # remove ''italics''
+    s = re.sub("''([^']*)''", "\\\\textit{\\1}", s)  # change ''italics''
     s = re.sub("\"([^\"]*)\"", "``\\1''", s)    # change "quotes"
+    return s
+    
+###########################################################
+
+def output_docx_glossary(glos, docxfilename):
+    import docx # requires https://github.com/mikemaccana/python-docx
+    items = glos.items()
+    items.sort()
+    relationships = docx.relationshiplist()
+    document = docx.newdocument()
+    docbody = document.xpath('/w:document/w:body', namespaces=docx.nsprefixes)[0]
+    docbody.append(docx.heading("ONTORULE glossary", 1))
+    for k,v in items:
+        docbody.append(docx.heading(k, 2))
+        docbody.append(docx.paragraph(to_docx(v)))
+    coreprops = docx.coreproperties(title='ONTORULE glossary', subject="", creator='ONTORULE', keywords=[])
+    appprops = docx.appproperties()
+    contenttypes = docx.contenttypes()
+    websettings = docx.websettings()
+    wordrelationships = docx.wordrelationships(relationships)
+    docx.savedocx(document,coreprops,appprops,contenttypes,websettings,wordrelationships, docxfilename)
+    
+def to_docx(s):
+    s = re.sub("\[\[((.*)\|)?([^\]]*)\]\]","\\3", s)  # remove [[Internal|Links]]
+    s = re.sub("\[([^\] ]*) ([^\]]*)\]","\\2", s)    # remove [http://example.org External links] 
+    s = re.sub("'''([^']*)'''", "\\1", s)  # remove '''bold'''
+    s = re.sub("''([^']*)''", "\\1", s)  # remove ''italics''
     return s
     
 ###########################################################
@@ -86,17 +121,17 @@ def usage():
     --host hostname   : wiki hostname (e.g., "wikipedia.org")
     --path path       : wiki path (e.g., "/w/")
     --category cat    : wiki category (e.g., "Glossary")
-    --latex | --html  : selects the output format
+    --latex | --html | --docx : selects the output format
     """
 
 if __name__ == '__main__':
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "ho", ["help", "output=", "user=", "pass=", "domain=", "host=", "path=", "category=", "latex", "html"])
+        opts, args = getopt.getopt(sys.argv[1:], "ho", ["help", "output=", "user=", "pass=", "domain=", "host=", "path=", "category=", "latex", "html", "docx"])
     except getopt.GetoptError, err:
         print str(err)
         usage()
         sys.exit(2)
-    output = sys.stdout
+    filename = None
     username = None
     password = None
     domain = None
@@ -109,7 +144,7 @@ if __name__ == '__main__':
             usage()
             sys.exit()
         elif o in ("-o", "--output"):
-            output = open(a, "wt")
+            filename = a
         elif o == "--user":
             username = a
         elif o == "--pass":
@@ -126,11 +161,13 @@ if __name__ == '__main__':
             output_func = output_latex_glossary
         elif o == "--html":
             output_func = output_html_glossary
+        elif o == "--docx":
+            output_func = output_docx_glossary
         else:
             assert False, "unhandled option"
     if host is None:
         usage()
     else:
         glos = populate_glos(host, path, category, username = username, password = password, domain = domain)
-        output_func(glos, output)
+        output_func(glos, filename)
     
