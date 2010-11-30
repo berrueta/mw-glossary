@@ -1,5 +1,6 @@
 This is a simple Python script that generates a LaTeX glossary database,
-suitable for use with the 'glossary' package.
+suitable for use with the 'glossary' package. It can also produce output
+in HTML and Office Open XML (.docx)
 
 A glossary entry is created for each page in the designated Wiki category.
 Only the first paragraph of the page is actually used.
