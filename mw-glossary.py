@@ -57,6 +57,7 @@ def to_html(s):
     s = re.sub("\[([^\] ]*) ([^\]]*)\]","<a href=\"\\1\">\\2</a>", s)    # change [http://example.org External links] 
     s = re.sub("'''([^']*)'''", "<b>\\1</b>", s)  # change '''bold'''
     s = re.sub("''([^']*)''", "<i>\\1</i>", s)  # change ''italics''
+    s = re.sub("<ref>([^<]*)</ref>", "", s) # remove <ref>
     return s    
 
 ###########################################################
@@ -80,6 +81,7 @@ def to_latex(s):
     s = re.sub("'''([^']*)'''", "\\\\textbf{\\1}", s)  # change '''bold'''
     s = re.sub("''([^']*)''", "\\\\textit{\\1}", s)  # change ''italics''
     s = re.sub("\"([^\"]*)\"", "``\\1''", s)    # change "quotes"
+    s = re.sub("<ref>([^<]*)</ref>", "", s) # remove <ref>
     return s
     
 ###########################################################
@@ -107,6 +109,7 @@ def to_docx(s):
     s = re.sub("\[([^\] ]*) ([^\]]*)\]","\\2", s)    # remove [http://example.org External links] 
     s = re.sub("'''([^']*)'''", "\\1", s)  # remove '''bold'''
     s = re.sub("''([^']*)''", "\\1", s)  # remove ''italics''
+    s = re.sub("<ref>([^<]*)</ref>", "", s) # remove <ref>
     return s
     
 ###########################################################
