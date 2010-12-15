@@ -28,7 +28,7 @@ def populate_glos(host, path, catName, username = None, password = None, domain 
         if (page.namespace == 0):
             print "Retrieving", page.name
             allDef = page.edit()
-            filteredParas = filter(lambda p : len(p) > 0 and p[0].isalpha(), allDef.splitlines())
+            filteredParas = filter(lambda p : len(p) > 0 and p.startswith("[[") is False, allDef.splitlines())
             if (len(filteredParas) > 0):
                 firstPara = filteredParas[0]
                 glos[str(page.name)] = str(firstPara)
