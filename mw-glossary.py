@@ -53,7 +53,7 @@ def output_html_glossary(glos, filename):
     out.write("</dl></body></html>")
 
 def to_html(s):
-    s = re.sub("\[\[((.*)\|)?([^\]]*)\]\]","<u>\\3</u>", s)  # remove [[Internal|Links]]
+    s = re.sub("\[\[([^\|\]]*\|)?([^\|\]]*)\]\]","<u>\\3</u>", s)  # remove [[Internal|Links]]
     s = re.sub("\[([^\] ]*) ([^\]]*)\]","<a href=\"\\1\">\\2</a>", s)    # change [http://example.org External links] 
     s = re.sub("'''([^']*)'''", "<b>\\1</b>", s)  # change '''bold'''
     s = re.sub("''([^']*)''", "<i>\\1</i>", s)  # change ''italics''
